@@ -21,6 +21,7 @@ export function PostEditor({ postId }: Props) {
   const [post, setPost] = useState({
     title: "", slug: "", excerpt: "", content: "", cover_image: "",
     category_slug: "religion", status: "draft", author_name: "",
+    published_at: new Date().toISOString().split("T")[0],
   });
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
@@ -38,13 +39,21 @@ export function PostEditor({ postId }: Props) {
           content: data.content ?? "", cover_image: data.cover_image ?? "",
           category_slug: (data.categories as { slug?: string } | null)?.slug ?? "religion",
           status: data.status, author_name: data.author_name ?? "",
+          published_at: data.published_at ? new Date(data.published_at).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
         });
-        if (editorRef.current) editorRef.current.innerHTML = data.content ?? "";
       }
       setLoading(false);
     })();
     return () => { cancelled = true; };
   }, [postId, isNew]);
+
+  useEffect(() => {
+    if (!loading && editorRef.current && post.content && !isNew) {
+      if (!editorRef.current.innerHTML) {
+        editorRef.current.innerHTML = post.content;
+      }
+    }
+  }, [loading, post.content, isNew]);
 
   function exec(cmd: string, value?: string) {
     document.execCommand(cmd, false, value);
@@ -99,9 +108,7 @@ export function PostEditor({ postId }: Props) {
       status,
       author_name: post.author_name || null,
       author_id: user?.id ?? null,
-      ...(status === "published" && post.status !== "published"
-        ? { published_at: new Date().toISOString() }
-        : status !== "published" ? { published_at: null } : {}),
+      published_at: status === "published" ? new Date(post.published_at).toISOString() : null,
     };
     const { error } = isNew
       ? await supabase.from("posts").insert(payload)
@@ -177,6 +184,11 @@ export function PostEditor({ postId }: Props) {
               <label className="block text-sm font-medium mb-1.5">Author name</label>
               <input value={post.author_name} onChange={(e) => setPost({ ...post, author_name: e.target.value })}
                 className="w-full ml px-3 py-2 rounded border border-input bg-background text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Publish Date</label>
+              <input type="date" value={post.published_at} onChange={(e) => setPost({ ...post, published_at: e.target.value })}
+                className="w-full px-3 py-2 rounded border border-input bg-background text-sm" />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1.5">Cover image</label>
