@@ -21,16 +21,21 @@ export function PostEditor({ postId }: Props) {
   const [post, setPost] = useState({
     title: "", slug: "", excerpt: "", content: "", cover_image: "",
     category_slug: "religion", status: "draft", author_name: "",
+    author_profile_id: "",
     published_at: new Date().toISOString().split("T")[0],
   });
+  const [authors, setAuthors] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isNew) { setLoading(false); return; }
     let cancelled = false;
     (async () => {
+      const { data: a } = await supabase.from("authors").select("id, name").order("name");
+      setAuthors(a ?? []);
+
+      if (isNew) { setLoading(false); return; }
       const { data } = await supabase.from("posts").select("*, categories(slug)").eq("id", postId!).maybeSingle();
       if (cancelled) return;
       if (data) {
@@ -39,6 +44,7 @@ export function PostEditor({ postId }: Props) {
           content: data.content ?? "", cover_image: data.cover_image ?? "",
           category_slug: (data.categories as { slug?: string } | null)?.slug ?? "religion",
           status: data.status, author_name: data.author_name ?? "",
+          author_profile_id: data.author_profile_id ?? "",
           published_at: data.published_at ? new Date(data.published_at).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
         });
       }
@@ -107,6 +113,7 @@ export function PostEditor({ postId }: Props) {
       category_id: cat.id,
       status,
       author_name: post.author_name || null,
+      author_profile_id: post.author_profile_id || null,
       author_id: user?.id ?? null,
       published_at: status === "published" ? new Date(post.published_at).toISOString() : null,
     };
@@ -181,7 +188,21 @@ export function PostEditor({ postId }: Props) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5">Author name</label>
+              <label className="block text-sm font-medium mb-1.5">Author profile</label>
+              <select value={post.author_profile_id} onChange={(e) => {
+                const id = e.target.value;
+                const name = authors.find(a => a.id === id)?.name || post.author_name;
+                setPost({ ...post, author_profile_id: id, author_name: name });
+              }}
+                className="w-full px-3 py-2 rounded border border-input bg-background text-sm">
+                <option value="">None (Custom name only)</option>
+                {authors.map((a) => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Author name display</label>
               <input value={post.author_name} onChange={(e) => setPost({ ...post, author_name: e.target.value })}
                 className="w-full ml px-3 py-2 rounded border border-input bg-background text-sm" />
             </div>

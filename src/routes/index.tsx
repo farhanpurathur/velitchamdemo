@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-const POST_FIELDS = "id, slug, title, excerpt, cover_image, author_name, published_at, view_count, categories(slug, name, name_ml)";
+const POST_FIELDS = "id, slug, title, excerpt, cover_image, author_name, published_at, view_count, categories(slug, name, name_ml), authors(slug)";
 
 function HomePage() {
   const { data: slides = [] } = useQuery({

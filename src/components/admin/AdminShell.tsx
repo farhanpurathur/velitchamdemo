@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import {
   LayoutDashboard, FileText, Image as ImageIcon, Megaphone,
-  Inbox, LogOut, Menu, PlusCircle,
+  Inbox, LogOut, Menu, PlusCircle, User as UserIcon,
 } from "lucide-react";
 import logoMark from "@/assets/logo-mark.png";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,7 @@ const NAV: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/posts", label: "All Posts", icon: FileText },
   { to: "/admin/posts/new", label: "New Post", icon: PlusCircle },
+  { to: "/admin/authors", label: "Authors", icon: UserIcon },
   { to: "/admin/slides", label: "Slides", icon: ImageIcon },
   { to: "/admin/announcements", label: "Announcements", icon: Megaphone },
   { to: "/admin/submissions", label: "Submissions", icon: Inbox },

@@ -31,6 +31,7 @@ interface FullPost {
   view_count: number;
   category_id: string;
   categories: { slug: string; name: string; name_ml: string | null } | null;
+  authors?: { slug: string } | null;
 }
 
 function PostPage() {
@@ -46,7 +47,7 @@ function PostPage() {
     (async () => {
       const { data, error } = await supabase
         .from("posts")
-        .select("id, slug, title, excerpt, content, cover_image, author_name, published_at, view_count, category_id, categories(slug, name, name_ml)")
+        .select("id, slug, title, excerpt, content, cover_image, author_name, author_profile_id, published_at, view_count, category_id, categories(slug, name, name_ml), authors(slug)")
         .eq("slug", slug)
         .eq("status", "published")
         .maybeSingle();
@@ -130,7 +131,18 @@ function PostPage() {
               {post.title}
             </h1>
             <div className="mt-5 flex flex-wrap items-center gap-4 text-sm text-muted-foreground border-b border-border pb-5">
-              {post.author_name && <span className="ml inline-flex items-center gap-1.5"><UserIcon className="h-4 w-4" /> {post.author_name}</span>}
+              {post.author_name && (
+                <span className="ml inline-flex items-center gap-1.5">
+                  <UserIcon className="h-4 w-4" />
+                  {post.authors?.slug ? (
+                    <Link to="/author/$slug" params={{ slug: post.authors.slug }} className="hover:text-brand hover:underline transition-colors font-medium">
+                      {post.author_name}
+                    </Link>
+                  ) : (
+                    <span>{post.author_name}</span>
+                  )}
+                </span>
+              )}
               {post.published_at && <span className="inline-flex items-center gap-1.5"><Calendar className="h-4 w-4" /> {new Date(post.published_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}</span>}
               <span className="inline-flex items-center gap-1.5"><Eye className="h-4 w-4" /> {post.view_count.toLocaleString()} views</span>
             </div>

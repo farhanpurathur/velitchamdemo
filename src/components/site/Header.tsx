@@ -22,12 +22,12 @@ export function Header() {
   return (
     <>
       {/* Big logo banner — hidden when scrolled */}
-      <div
-        className={cn(
-          "w-full bg-background border-b border-border transition-all duration-300 overflow-hidden",
-          scrolled ? "max-h-0 opacity-0" : "max-h-44 opacity-100 py-6 md:py-8",
-        )}
-      >
+        <div
+          className={cn(
+            "w-full bg-background border-b border-border transition-all duration-300 overflow-hidden hidden md:block",
+            scrolled ? "max-h-0 opacity-0" : "max-h-44 opacity-100 py-6 md:py-8",
+          )}
+        >
         <div className="container mx-auto flex justify-center">
           <Link to="/">
             <img
@@ -52,18 +52,30 @@ export function Header() {
             to="/"
             className={cn(
               "flex items-center gap-2 transition-all duration-300",
-              scrolled ? "opacity-100 w-auto" : "opacity-0 w-0 overflow-hidden md:opacity-100 md:w-auto",
+              scrolled ? "opacity-100 w-auto" : "opacity-100 w-auto md:opacity-0 md:w-0 md:overflow-hidden",
             )}
           >
-            <img src={logoMark} alt="Velicham" className="h-9 w-9" />
-            <span className="hidden md:inline ml text-xl font-bold text-brand">വെളിച്ചം</span>
+            <img
+              src={logo}
+              alt="Velicham"
+              className="h-8 md:h-9 w-auto"
+            />
           </Link>
+
+          {/* Mobile search icon (always visible) */}
+          <button
+            aria-label="Search"
+            onClick={() => setSearchOpen(true)}
+            className="lg:hidden ml-auto p-2 rounded-md hover:bg-muted"
+          >
+            <Search className="h-5 w-5" />
+          </button>
 
           {/* Mobile menu trigger */}
           <button
             onClick={() => setMobileOpen(true)}
             aria-label="Open menu"
-            className="lg:hidden ml-auto p-2 rounded-md hover:bg-muted"
+            className="lg:hidden p-2 rounded-md hover:bg-muted"
           >
             <Menu className="h-5 w-5" />
           </button>
@@ -123,15 +135,6 @@ export function Header() {
               Submit Article
             </Link>
           </div>
-
-          {/* Mobile search icon (always visible) */}
-          <button
-            aria-label="Search"
-            onClick={() => setSearchOpen(true)}
-            className="lg:hidden p-2 rounded-md hover:bg-muted"
-          >
-            <Search className="h-5 w-5" />
-          </button>
         </div>
       </header>
 
@@ -141,7 +144,7 @@ export function Header() {
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
           <div className="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-background shadow-xl overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-border">
-              <img src={logoMark} alt="Velicham" className="h-9 w-9" />
+              <img src={logo} alt="Velicham" className="h-9 w-auto" />
               <button onClick={() => setMobileOpen(false)} aria-label="Close" className="p-2">
                 <X className="h-5 w-5" />
               </button>

@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      authors: {
+        Row: {
+          bio: string | null
+          created_at: string
+          id: string
+          name: string
+          photo_url: string | null
+          slug: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          photo_url?: string | null
+          slug: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          photo_url?: string | null
+          slug?: string
+        }
+        Relationships: []
+      }
       announcements: {
         Row: {
           created_at: string
@@ -110,6 +137,7 @@ export type Database = {
         Row: {
           author_id: string | null
           author_name: string | null
+          author_profile_id: string | null
           category_id: string
           content: string
           cover_image: string | null
@@ -126,6 +154,7 @@ export type Database = {
         Insert: {
           author_id?: string | null
           author_name?: string | null
+          author_profile_id?: string | null
           category_id: string
           content?: string
           cover_image?: string | null
@@ -142,6 +171,7 @@ export type Database = {
         Update: {
           author_id?: string | null
           author_name?: string | null
+          author_profile_id?: string | null
           category_id?: string
           content?: string
           cover_image?: string | null
@@ -156,6 +186,13 @@ export type Database = {
           view_count?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "posts_author_profile_id_fkey"
+            columns: ["author_profile_id"]
+            isOneToOne: false
+            referencedRelation: "authors"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "posts_category_id_fkey"
             columns: ["category_id"]

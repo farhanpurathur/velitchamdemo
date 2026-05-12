@@ -25,7 +25,7 @@ function SearchPage() {
     setLoading(true);
     supabase
       .from("posts")
-      .select("id, slug, title, excerpt, cover_image, author_name, published_at, view_count, categories(slug, name, name_ml)")
+      .select("id, slug, title, excerpt, cover_image, author_name, published_at, view_count, categories(slug, name, name_ml), authors(slug)")
       .eq("status", "published")
       .or(`title.ilike.%${q}%,excerpt.ilike.%${q}%`)
       .order("published_at", { ascending: false })

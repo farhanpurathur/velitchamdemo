@@ -33,7 +33,7 @@ function CategoryPage() {
       if (!cat) { setPosts([]); setLoading(false); return; }
       const { data } = await supabase
         .from("posts")
-        .select("id, slug, title, excerpt, cover_image, author_name, published_at, view_count, categories(slug, name, name_ml)")
+        .select("id, slug, title, excerpt, cover_image, author_name, published_at, view_count, categories(slug, name, name_ml), authors(slug)")
         .eq("status", "published")
         .eq("category_id", cat.id)
         .order("published_at", { ascending: false });

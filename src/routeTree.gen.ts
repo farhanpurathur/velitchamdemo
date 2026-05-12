@@ -19,9 +19,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PostSlugRouteImport } from './routes/post.$slug'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
+import { Route as AuthorSlugRouteImport } from './routes/author.$slug'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminSubmissionsRouteImport } from './routes/admin.submissions'
 import { Route as AdminSlidesRouteImport } from './routes/admin.slides'
+import { Route as AdminAuthorsRouteImport } from './routes/admin.authors'
 import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
 import { Route as AdminPostsIndexRouteImport } from './routes/admin.posts.index'
 import { Route as AdminPostsNewRouteImport } from './routes/admin.posts.new'
@@ -77,6 +79,11 @@ const CategorySlugRoute = CategorySlugRouteImport.update({
   path: '/category/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthorSlugRoute = AuthorSlugRouteImport.update({
+  id: '/author/$slug',
+  path: '/author/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -90,6 +97,11 @@ const AdminSubmissionsRoute = AdminSubmissionsRouteImport.update({
 const AdminSlidesRoute = AdminSlidesRouteImport.update({
   id: '/slides',
   path: '/slides',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAuthorsRoute = AdminAuthorsRouteImport.update({
+  id: '/authors',
+  path: '/authors',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminAnnouncementsRoute = AdminAnnouncementsRouteImport.update({
@@ -122,9 +134,11 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/submit': typeof SubmitRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
+  '/admin/authors': typeof AdminAuthorsRoute
   '/admin/slides': typeof AdminSlidesRoute
   '/admin/submissions': typeof AdminSubmissionsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/author/$slug': typeof AuthorSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/post/$slug': typeof PostSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -140,9 +154,11 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/submit': typeof SubmitRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
+  '/admin/authors': typeof AdminAuthorsRoute
   '/admin/slides': typeof AdminSlidesRoute
   '/admin/submissions': typeof AdminSubmissionsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/author/$slug': typeof AuthorSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/post/$slug': typeof PostSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -160,9 +176,11 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/submit': typeof SubmitRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
+  '/admin/authors': typeof AdminAuthorsRoute
   '/admin/slides': typeof AdminSlidesRoute
   '/admin/submissions': typeof AdminSubmissionsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/author/$slug': typeof AuthorSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/post/$slug': typeof PostSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -181,9 +199,11 @@ export interface FileRouteTypes {
     | '/search'
     | '/submit'
     | '/admin/announcements'
+    | '/admin/authors'
     | '/admin/slides'
     | '/admin/submissions'
     | '/admin/users'
+    | '/author/$slug'
     | '/category/$slug'
     | '/post/$slug'
     | '/admin/'
@@ -199,9 +219,11 @@ export interface FileRouteTypes {
     | '/search'
     | '/submit'
     | '/admin/announcements'
+    | '/admin/authors'
     | '/admin/slides'
     | '/admin/submissions'
     | '/admin/users'
+    | '/author/$slug'
     | '/category/$slug'
     | '/post/$slug'
     | '/admin'
@@ -218,9 +240,11 @@ export interface FileRouteTypes {
     | '/search'
     | '/submit'
     | '/admin/announcements'
+    | '/admin/authors'
     | '/admin/slides'
     | '/admin/submissions'
     | '/admin/users'
+    | '/author/$slug'
     | '/category/$slug'
     | '/post/$slug'
     | '/admin/'
@@ -237,6 +261,7 @@ export interface RootRouteChildren {
   InterviewRoute: typeof InterviewRoute
   SearchRoute: typeof SearchRoute
   SubmitRoute: typeof SubmitRoute
+  AuthorSlugRoute: typeof AuthorSlugRoute
   CategorySlugRoute: typeof CategorySlugRoute
   PostSlugRoute: typeof PostSlugRoute
 }
@@ -313,6 +338,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategorySlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/author/$slug': {
+      id: '/author/$slug'
+      path: '/author/$slug'
+      fullPath: '/author/$slug'
+      preLoaderRoute: typeof AuthorSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/users': {
       id: '/admin/users'
       path: '/users'
@@ -332,6 +364,13 @@ declare module '@tanstack/react-router' {
       path: '/slides'
       fullPath: '/admin/slides'
       preLoaderRoute: typeof AdminSlidesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/authors': {
+      id: '/admin/authors'
+      path: '/authors'
+      fullPath: '/admin/authors'
+      preLoaderRoute: typeof AdminAuthorsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/announcements': {
@@ -367,6 +406,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminAnnouncementsRoute: typeof AdminAnnouncementsRoute
+  AdminAuthorsRoute: typeof AdminAuthorsRoute
   AdminSlidesRoute: typeof AdminSlidesRoute
   AdminSubmissionsRoute: typeof AdminSubmissionsRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -378,6 +418,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAnnouncementsRoute: AdminAnnouncementsRoute,
+  AdminAuthorsRoute: AdminAuthorsRoute,
   AdminSlidesRoute: AdminSlidesRoute,
   AdminSubmissionsRoute: AdminSubmissionsRoute,
   AdminUsersRoute: AdminUsersRoute,
@@ -397,6 +438,7 @@ const rootRouteChildren: RootRouteChildren = {
   InterviewRoute: InterviewRoute,
   SearchRoute: SearchRoute,
   SubmitRoute: SubmitRoute,
+  AuthorSlugRoute: AuthorSlugRoute,
   CategorySlugRoute: CategorySlugRoute,
   PostSlugRoute: PostSlugRoute,
 }
