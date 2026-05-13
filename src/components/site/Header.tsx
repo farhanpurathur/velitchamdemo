@@ -13,7 +13,17 @@ export function Header() {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 120);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled((prev) => {
+        // Use a larger buffer to prevent the layout shift scroll loop
+        // Show sticky logo/hide banner after 120px
+        if (y > 120) return true;
+        // Only show banner/hide sticky logo when scrolled back near the top
+        if (y < 40) return false;
+        return prev;
+      });
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -51,8 +61,10 @@ export function Header() {
           <Link
             to="/"
             className={cn(
-              "flex items-center gap-2 transition-all duration-300",
-              scrolled ? "opacity-100 w-auto" : "opacity-100 w-auto md:opacity-0 md:w-0 md:overflow-hidden",
+              "flex items-center gap-2 transition-opacity duration-300",
+              scrolled 
+                ? "opacity-100 w-auto" 
+                : "opacity-100 w-auto md:opacity-0 md:w-0 md:overflow-hidden md:pointer-events-none",
             )}
           >
             <img
